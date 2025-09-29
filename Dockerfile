@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy app
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# Include TestPyPI as an extra index to fetch your published package
+RUN pip install --no-cache-dir --extra-index-url https://test.pypi.org/simple -r requirements.txt
 
 COPY app ./app
 
