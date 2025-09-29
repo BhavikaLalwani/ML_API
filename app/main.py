@@ -40,9 +40,18 @@ def _parse_date(s: str) -> date:
         raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
 
 
+def _resolve_model_path(preferred: Path) -> Path:
+    """Return an existing path, trying .joblib then .pkl automatically."""
+    if preferred.exists():
+        return preferred
+    alt = preferred.with_suffix(".pkl")
+    if alt.exists():
+        return alt
+    raise HTTPException(status_code=500, detail=f"Model not found (.joblib/.pkl) at {preferred} or {alt}")
+
+
 def _load_model(path: Path):
-    if not path.exists():
-        raise HTTPException(status_code=500, detail=f"Model not found at {path}")
+    path = _resolve_model_path(path)
     try:
         return joblib.load(path)
     except Exception as e:
@@ -102,13 +111,23 @@ def root() -> JSONResponse:
             "/predict/rain/": {"date": "YYYY-MM-DD"},
             "/predict/precipitation/fall/": {"date": "YYYY-MM-DD"},
         },
+        "outputs": {
+            "/predict/rain/": {
+                "input_date": "YYYY-MM-DD",
+                "prediction": {"date": "YYYY-MM-DD", "will_rain": True}
+            },
+            "/predict/precipitation/fall/": {
+                "input_date": "YYYY-MM-DD",
+                "prediction": {"start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD", "precipitation_fall": 28.2}
+            }
+        },
         "github": "https://github.com/BhavikaLalwani/ML_API",
     })
 
 
 @app.get("/health/")
 def health() -> JSONResponse:
-    return JSONResponse({"status": "ok"})
+    return JSONResponse({"status": "ok", "message": "Open Meteo API healthy"})
 
 
 @app.get("/predict/rain/")
