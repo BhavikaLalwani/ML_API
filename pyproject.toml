@@ -2,7 +2,7 @@
 name = "openmeteo-api"
 version = "0.1.0"
 description = "FastAPI service for rain(+7d) and precipitation(3d) predictions"
-authors = [{ name = "bhavika" }]
+authors = [{ name = "bhavika lalwani" }]
 requires-python = ">=3.11"
 
 [tool.uvicorn]
