@@ -5,4 +5,3 @@ numpy==1.26.4
 scikit-learn==1.5.1
 joblib==1.4.2
 requests==2.32.3
-25679681-ml==0.1.4

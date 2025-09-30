@@ -10,7 +10,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 
-from ml_25679681.features import add_weather_rollups, base_weather_columns
+from app.features import add_weather_rollups, base_weather_columns
 
 LAT = -33.8678
 LON = 151.2073
