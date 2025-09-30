@@ -3,7 +3,6 @@ from typing import List, Tuple
 import pandas as pd
 
 
-# Base weather features matching your package exactly
 BASE_WEATHER_FEATURES: Tuple[str, ...] = (
     "precipitation_sum",
     "rain_sum",
@@ -16,12 +15,10 @@ BASE_WEATHER_FEATURES: Tuple[str, ...] = (
 
 
 def base_weather_columns() -> List[str]:
-    """Return the base numeric columns used before rollups, matching the notebook."""
     return list(BASE_WEATHER_FEATURES)
 
 
 def add_weather_rollups(df: pd.DataFrame, windows: Tuple[int, ...] = (3, 7, 14, 30)) -> pd.DataFrame:
-    """Add lag1, rolling mean and std for base weather columns using past-only windows."""
     out = df.copy()
     for c in base_weather_columns():
         if c in out.columns:
