@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install Poetry and Python dependencies
 RUN pip install --no-cache-dir poetry
-COPY pyproject.toml ./
+COPY pyproject.toml README.md ./
 RUN poetry config virtualenvs.create false
 RUN poetry install --only=main
 
