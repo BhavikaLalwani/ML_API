@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl build-essential && rm -rf /var/lib/apt/lists/*
+    curl build-essential gcc g++ python3-dev && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --extra-index-url https://test.pypi.org/simple -r requirements.txt
