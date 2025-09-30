@@ -5,6 +5,7 @@ services:
     plan: free
     region: oregon
     autoDeploy: true
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /health/
     envVars:
       - key: PYTHON_VERSION
