@@ -9,14 +9,13 @@ import requests
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
-# Use your published package for feature engineering
+
 from ml_25679681.features import add_weather_rollups, base_weather_columns
 
 LAT = -33.8678
 LON = 151.2073
 ERA5_BASE = "https://archive-api.open-meteo.com/v1/era5"
 
-# Daily vars consistent with training
 DAILY_VARS: List[str] = [
     "temperature_2m_max","temperature_2m_min",
     "precipitation_sum","rain_sum","showers_sum",
@@ -41,7 +40,6 @@ def _parse_date(s: str) -> date:
 
 
 def _resolve_model_path(preferred: Path) -> Path:
-    """Return an existing path, trying .joblib then .pkl automatically."""
     if preferred.exists():
         return preferred
     alt = preferred.with_suffix(".pkl")
@@ -75,18 +73,16 @@ def _fetch_daily_range(start: date, end: date) -> pd.DataFrame:
     if not daily or "time" not in daily:
         raise HTTPException(status_code=502, detail="Unexpected response schema from Open-Meteo")
     df = pd.DataFrame(daily)
-    df["time"] = pd.to_datetime(df["time"])  # keep tz-naive local time
+    df["time"] = pd.to_datetime(df["time"])
     df = df.rename(columns={"time": "date"}).sort_values("date").reset_index(drop=True)
     return df
 
 
 def _build_latest_feature_row(ref_date: date) -> pd.DataFrame:
-    # fetch past window sufficient for rollups
     start = ref_date - timedelta(days=60)
     end = ref_date
     df = _fetch_daily_range(start, end)
 
-    # ensure base columns present
     missing = [c for c in base_weather_columns() if c not in df.columns]
     if missing:
         raise HTTPException(status_code=500, detail=f"Missing required columns from API: {missing}")
@@ -95,7 +91,6 @@ def _build_latest_feature_row(ref_date: date) -> pd.DataFrame:
     feat = feat.dropna().reset_index(drop=True)
     if feat.empty:
         raise HTTPException(status_code=500, detail="Insufficient history to build features")
-    # last row is the most recent day features
     x = feat.tail(1).copy()
     return x
 
@@ -138,7 +133,6 @@ def predict_rain(date: str = Query(..., description="YYYY-MM-DD")) -> JSONRespon
     X = _build_latest_feature_row(input_date)
     model = _load_model(RAIN_MODEL_PATH)
 
-    # align columns
     if hasattr(model, "feature_names_in_"):
         cols = list(model.feature_names_in_)
         for c in cols:
