@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: openmeteo-api
+    env: python
+    plan: free
+    region: oregon
+    autoDeploy: true
+    pythonVersion: 3.11.4
+    buildCommand: poetry install --no-dev
+    startCommand: poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT
