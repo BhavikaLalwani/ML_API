@@ -1,0 +1,12 @@
+.git
+.gitignore
+README.md
+.github
+.python-version
+pyproject.toml
+*.pyc
+__pycache__
+.pytest_cache
+.coverage
+.env
+.DS_Store
