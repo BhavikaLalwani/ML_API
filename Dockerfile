@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir poetry
 COPY pyproject.toml ./
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+RUN poetry install --only=main
 
 # Copy application
 COPY app ./app
